@@ -1,5 +1,9 @@
-import { Button } from './Button';
+import MainPage from './MainPage/MainPage';
 
 export const App = () => {
-  return <Button label="Send" />;
+  return (
+    <div className='container'>
+      <MainPage />
+    </div>
+  );
 };
