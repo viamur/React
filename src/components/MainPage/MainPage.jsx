@@ -7,7 +7,6 @@ import { Component } from 'react';
 const initialForm = {
   date: '2022-07-28',
   time: '14:14',
-  category: 'продукти',
   summ: '',
   currency: 'UAH',
   comment: '',
@@ -16,9 +15,24 @@ const initialForm = {
 
 class MainPage extends Component {
   state = {
+    category: '',
     isCategoriesList: false,
     ...initialForm,
   };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const currentCategories = nextProps.categories[prevState.transType];
+    if (currentCategories.length && !prevState.category) {
+      return { category: currentCategories[0].title };
+    }
+    return null;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.transType !== this.state.transType) {
+      const title = this.props.categories[this.state.transType][0].title;
+      this.setState({ category: title });
+    }
+  }
 
   handleChange = e => {
     const { name, value } = e.target;
@@ -27,6 +41,7 @@ class MainPage extends Component {
 
   setCategories = category => {
     this.setState({ category });
+    this.handleCloseCategoriesList();
   };
 
   handleOpenCategoriesList = () => {
@@ -41,8 +56,9 @@ class MainPage extends Component {
   };
 
   render() {
-    const { onIncomesBtnClick, onCostsBtnClick, addCategory, categories, addTransaction } =
-      this.props;
+    console.log('main page', this.props.categories);
+
+    const { onOpenPage, addCategory, categories, addTransaction } = this.props;
     const { isCategoriesList, ...form } = this.state;
     return (
       <div className="container">
@@ -54,9 +70,10 @@ class MainPage extends Component {
         <main className={s.main}>
           {isCategoriesList ? (
             <CategoriesList
-              categories={categories}
+              categories={categories[this.state.transType]}
               addCategory={addCategory}
               setCategories={this.setCategories}
+              transType={this.state.transType}
             />
           ) : (
             <>
@@ -68,10 +85,10 @@ class MainPage extends Component {
                 resetForm={this.resetForm}
               />
               <div className={s.blockBtn}>
-                <button className={s.costs} onClick={onCostsBtnClick}>
+                <button className={s.costs} onClick={() => onOpenPage('costs')}>
                   Всі витрати
                 </button>
-                <button className={s.incomes} onClick={onIncomesBtnClick}>
+                <button className={s.incomes} onClick={() => onOpenPage('incomes')}>
                   Всі прибутки
                 </button>
               </div>

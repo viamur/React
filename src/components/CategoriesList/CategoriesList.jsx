@@ -1,21 +1,21 @@
-import { nanoid } from "nanoid";
-import s from "./CategoriesList.module.css";
-import sprite from "../../assets/sprite.svg";
-import { Component } from "react";
+import { nanoid } from 'nanoid';
+import s from './CategoriesList.module.css';
+import sprite from '../../assets/sprite.svg';
+import { Component } from 'react';
 
 class CategoriesList extends Component {
   state = {
-    input: "",
+    input: '',
   };
-  handleChange = (event) => {
+  handleChange = event => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
   };
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
-    const { addCategory } = this.props;
+    const { addCategory, transType } = this.props;
     const { input } = this.state;
-    addCategory({ title: input, id: nanoid() });
+    addCategory({ title: input, id: nanoid() }, transType);
   };
 
   render() {
@@ -29,7 +29,7 @@ class CategoriesList extends Component {
                 <p onClick={() => setCategories(title)}>{title}</p>
                 <button type="button" className={s.btnInfo}>
                   <svg className={s.svg}>
-                    <use href={sprite + "#icon-navigation-more"} />
+                    <use href={sprite + '#icon-navigation-more'} />
                   </svg>
                 </button>
               </li>
@@ -45,7 +45,7 @@ class CategoriesList extends Component {
             />
             <button className={s.btnAdd} type="submit">
               <svg width="15" height="15">
-                <use href={sprite + "#icon-plus"} />
+                <use href={sprite + '#icon-plus'} />
               </svg>
             </button>
           </form>

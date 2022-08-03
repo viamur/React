@@ -2,6 +2,8 @@ const keys = {
   CATEGORIES: 'categories',
   COSTS: 'costs',
   INCOMES: 'incomes',
+  COSTS_CAT: 'costsCategories',
+  INCOMES_CAT: 'incomesCategories',
 };
 
 const setDataToLS = (key, data) => {

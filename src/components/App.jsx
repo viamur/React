@@ -1,98 +1,80 @@
-<<<<<<< Updated upstream
+import { useEffect } from 'react';
+import { useState } from 'react';
 import { Component } from 'react';
 import lsApi from '../utils/localStorage';
 import MainPage from './MainPage/MainPage';
 import TransactionHistoryPage from './TransactionHistoryPage/TransactionHistoryPage';
 
-export class App extends Component {
-  state = {
-    activePage: 'main',
-    categories: [],
-    costs: [],
-    incomes: [],
-  };
-
-  componentDidMount() {
-    const { categories } = this.state;
-    const initialCategories = [{ title: 'Різне', id: '2' }];
-    const newCategories = lsApi.getDataFromLS(lsApi.keys.CATEGORIES, initialCategories);
-    const costs = lsApi.getDataFromLS(lsApi.keys.COSTS, []);
-    const incomes = lsApi.getDataFromLS(lsApi.keys.INCOMES, []);
-    this.setState({ categories: newCategories, costs, incomes });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { categories, costs, incomes } = this.state;
-    if (prevState.categories !== categories) {
-      lsApi.setDataToLS(lsApi.keys.CATEGORIES, categories);
-    }
-    if (prevState.costs !== costs) {
-      lsApi.setDataToLS(lsApi.keys.COSTS, costs);
-    }
-    if (prevState.incomes !== incomes) {
-      lsApi.setDataToLS(lsApi.keys.INCOMES, incomes);
-    }
-  }
-
-  addCategory = newCategory => {
-    this.setState(prevState => ({
-      categories: [...prevState.categories, newCategory],
-    }));
-  };
-
-  onIncomesBtnClick = () => {
-    this.setState({ activePage: 'incomes' });
-  };
-
-  onCostsBtnClick = () => {
-    this.setState({ activePage: 'costs' });
-  };
-  onReturnBtnClick = () => {
-    this.setState({ activePage: 'main' });
-  };
-
-  addTransaction = transaction => {
-    const { transType } = transaction;
-    this.setState(prevState => ({ [transType]: [...prevState[transType], transaction] }));
-  };
-
-  render() {
-    const { activePage, categories } = this.state;
-    switch (activePage) {
-      case 'main':
-        return (
-          <MainPage
-            addCategory={this.addCategory}
-            onIncomesBtnClick={this.onIncomesBtnClick}
-            onCostsBtnClick={this.onCostsBtnClick}
-            categories={categories}
-            addTransaction={this.addTransaction}
-          />
-        );
-      case 'costs':
-        return (
-          <TransactionHistoryPage transType={activePage} onReturnBtnClick={this.onReturnBtnClick} />
-        );
-      case 'incomes':
-        return (
-          <TransactionHistoryPage transType={activePage} onReturnBtnClick={this.onReturnBtnClick} />
-        );
-      default:
-        return;
-    }
-  }
-}
-=======
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { Button } from './Button';
-import { UserMenu } from './UserMenu';
+const initialCategories = [{ title: 'Різне', id: '2' }];
 
 export const App = () => {
-  return (
-    <div>
-      <UserMenu />
-    </div>
+  const [activePage, setActivePage] = useState('main');
+  const [costsCategories, setCostsCategories] = useState(() =>
+    lsApi.getDataFromLS(lsApi.keys.COSTS_CAT, initialCategories)
   );
+  const [incomesCategories, setIncomesCategories] = useState(() =>
+    lsApi.getDataFromLS(lsApi.keys.INCOMES_CAT, initialCategories)
+  );
+  const [costs, setCosts] = useState(() => lsApi.getDataFromLS(lsApi.keys.COSTS, []));
+  const [incomes, setIncomes] = useState(() => lsApi.getDataFromLS(lsApi.keys.INCOMES, []));
+
+  const addCategory = (newCategory, transType) => {
+    if (transType === 'costs') {
+      setCostsCategories(prevState => [...prevState, newCategory]);
+      return;
+    }
+    if (transType === 'incomes') {
+      setIncomesCategories(prevState => [...prevState, newCategory]);
+      return;
+    }
+  };
+
+  const onOpenPage = activePage => {
+    setActivePage(activePage);
+  };
+
+  const addTransaction = transaction => {
+    const { transType } = transaction;
+
+    transType === 'costs' && setCosts(prev => [...prev, transaction]);
+    transType === 'incomes' && setIncomes(prev => [...prev, transaction]);
+  };
+
+  useEffect(() => lsApi.setDataToLS(lsApi.keys.COSTS_CAT, costsCategories), [costsCategories]);
+  useEffect(
+    () => lsApi.setDataToLS(lsApi.keys.INCOMES_CAT, incomesCategories),
+    [incomesCategories]
+  );
+  useEffect(() => lsApi.setDataToLS(lsApi.keys.COSTS, costs), [costs]);
+  useEffect(() => lsApi.setDataToLS(lsApi.keys.INCOMES, incomes), [incomes]);
+
+  switch (activePage) {
+    case 'main':
+      return (
+        <MainPage
+          addCategory={addCategory}
+          onOpenPage={onOpenPage}
+          categories={{ costs: costsCategories, incomes: incomesCategories }}
+          addTransaction={addTransaction}
+        />
+      );
+    case 'costs':
+      return (
+        <TransactionHistoryPage
+          transactions={costs}
+          transType={activePage}
+          onReturnBtnClick={onOpenPage}
+        />
+      );
+    case 'incomes':
+      return (
+        <TransactionHistoryPage
+          transactions={incomes}
+          transType={activePage}
+          onReturnBtnClick={onOpenPage}
+        />
+      );
+    default:
+      return;
+  }
 };
->>>>>>> Stashed changes
