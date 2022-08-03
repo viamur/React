@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { Component } from 'react';
 import lsApi from '../utils/localStorage';
 import MainPage from './MainPage/MainPage';
@@ -81,3 +82,17 @@ export class App extends Component {
     }
   }
 }
+=======
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { Button } from './Button';
+import { UserMenu } from './UserMenu';
+
+export const App = () => {
+  return (
+    <div>
+      <UserMenu />
+    </div>
+  );
+};
+>>>>>>> Stashed changes
