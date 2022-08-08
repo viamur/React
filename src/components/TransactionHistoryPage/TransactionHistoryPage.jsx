@@ -1,20 +1,23 @@
 import Header from '../Header/Header';
 import sprite from '../../assets/sprite.svg';
 import s from './TransactionHistoryPage.module.css';
+import { useContext } from 'react';
+import { TransactionContext } from '../../context/TransactionsProvider';
+import { useParams } from 'react-router-dom';
 
-const TransactionHistoryPage = ({ transType, onReturnBtnClick, transactions }) => {
+const TransactionHistoryPage = ({ onReturnBtnClick }) => {
+  const transactionsContextValue = useContext(TransactionContext);
+
+  const { transType } = useParams();
+  // const { [transType]: transactions } = transactionsContextValue;
+  const transactions = transactionsContextValue[transType];
+
   const transactionName = transType === 'costs' ? 'Costs' : 'Incomes';
-  const cbOnClick = () => {
-    onReturnBtnClick('main');
-  };
+
   // const { date, time, category, summ, currency, comment, transType } = form;
   return (
     <div className="container">
-      <Header
-        title={`Transaction  ${transactionName}`}
-        icon={'#icon-arrow-left'}
-        cbOnClick={cbOnClick}
-      />
+      <Header title={`Transaction  ${transactionName}`} icon={'#icon-arrow-left'} />
       <ul className={s.list}>
         {transactions.map((el, idx) => (
           <li key={idx} className={s.item}>

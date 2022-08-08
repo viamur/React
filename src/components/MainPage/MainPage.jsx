@@ -1,10 +1,13 @@
+import { useEffect, useState, useContext } from 'react';
 import TransactionForm from '../TransactionForm/TransactionForm';
+import { Link, Route, Routes, useNavigate, useMatch } from 'react-router-dom';
 import CategoriesList from '../CategoriesList/CategoriesList';
 import Header from '../Header/Header';
 import s from './MainPage.module.css';
-import { Component } from 'react';
+import { CategoriesContext } from '../../context/CategoriesProvider';
 
 const initialForm = {
+  category: '',
   date: '2022-07-28',
   time: '14:14',
   summ: '',
@@ -13,90 +16,76 @@ const initialForm = {
   transType: 'costs',
 };
 
-class MainPage extends Component {
-  state = {
-    category: '',
-    isCategoriesList: false,
-    ...initialForm,
-  };
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const currentCategories = nextProps.categories[prevState.transType];
-    if (currentCategories.length && !prevState.category) {
-      return { category: currentCategories[0].title };
-    }
-    return null;
-  }
+const MainPage = ({ onOpenPage }) => {
+  const { params } = useMatch('/*');
+  const param = useMatch('/*');
+  const navigate = useNavigate();
+  const [form, setForm] = useState(initialForm);
+  const [isCategoriesList, setIsCategoriesList] = useState(false);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.transType !== this.state.transType) {
-      const title = this.props.categories[this.state.transType][0].title;
-      this.setState({ category: title });
-    }
-  }
+  const categoriesContextValue = useContext(CategoriesContext);
 
-  handleChange = e => {
+  useEffect(() => {
+    const title = categoriesContextValue[form.transType][0].title;
+    setForm(prev => ({ ...prev, category: title }));
+  }, [categoriesContextValue, form.transType]);
+
+  const handleChange = e => {
     const { name, value } = e.target;
-    this.setState({ [name]: value });
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  setCategories = category => {
-    this.setState({ category });
-    this.handleCloseCategoriesList();
+  const setCategories = category => {
+    setForm(prev => ({ ...prev, category }));
+    handleToggleCategoriesList();
   };
 
-  handleOpenCategoriesList = () => {
-    this.setState({ isCategoriesList: true });
-  };
-  handleCloseCategoriesList = () => {
-    this.setState({ isCategoriesList: false });
+  const handleToggleCategoriesList = () => {
+    params['*'] === '' && navigate('category');
+    params['*'] === 'category' && navigate('');
   };
 
-  resetForm = () => {
-    this.setState(initialForm);
+  const resetForm = () => {
+    setForm(initialForm);
   };
+  return (
+    <div className="container">
+      <Header
+        title={params['*'] === 'category' ? ' Категорії ' : 'Журнал витрат'}
+        icon={params['*'] === 'category' ? '#icon-arrow-left' : null}
+        cbOnClick={handleToggleCategoriesList}
+      />
+      <main className={s.main}>
+        <Routes>
+          <Route
+            path="category"
+            element={<CategoriesList setCategories={setCategories} transType={form.transType} />}
+          />
+          <Route
+            index
+            element={
+              <>
+                <TransactionForm
+                  handleChange={handleChange}
+                  form={form}
+                  handleOpenCategoriesList={handleToggleCategoriesList}
+                  resetForm={resetForm}
+                />
+                <div className={s.blockBtn}>
+                  <Link to="/history/costs" className={s.incomes}>
+                    Всі витрати
+                  </Link>
+                  <Link to="/history/incomes" className={s.incomes}>
+                    Всі прибутки
+                  </Link>
+                </div>
+              </>
+            }
+          />
+        </Routes>
+      </main>
+    </div>
+  );
+};
 
-  render() {
-    console.log('main page', this.props.categories);
-
-    const { onOpenPage, addCategory, categories, addTransaction } = this.props;
-    const { isCategoriesList, ...form } = this.state;
-    return (
-      <div className="container">
-        <Header
-          title={isCategoriesList ? ' Категорії ' : 'Журнал витрат'}
-          icon={isCategoriesList ? '#icon-arrow-left' : null}
-          cbOnClick={this.handleCloseCategoriesList}
-        />
-        <main className={s.main}>
-          {isCategoriesList ? (
-            <CategoriesList
-              categories={categories[this.state.transType]}
-              addCategory={addCategory}
-              setCategories={this.setCategories}
-              transType={this.state.transType}
-            />
-          ) : (
-            <>
-              <TransactionForm
-                handleChange={this.handleChange}
-                form={form}
-                handleOpenCategoriesList={this.handleOpenCategoriesList}
-                addTransaction={addTransaction}
-                resetForm={this.resetForm}
-              />
-              <div className={s.blockBtn}>
-                <button className={s.costs} onClick={() => onOpenPage('costs')}>
-                  Всі витрати
-                </button>
-                <button className={s.incomes} onClick={() => onOpenPage('incomes')}>
-                  Всі прибутки
-                </button>
-              </div>
-            </>
-          )}
-        </main>
-      </div>
-    );
-  }
-}
 export default MainPage;

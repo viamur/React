@@ -16,4 +16,6 @@ const getDataFromLS = (key, initialValue) => {
   return JSON.parse(data) ?? initialValue;
 };
 
-export default { keys, setDataToLS, getDataFromLS };
+const lsApi = { keys, setDataToLS, getDataFromLS };
+
+export default lsApi;

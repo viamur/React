@@ -1,12 +1,16 @@
+import { useContext } from 'react';
 import s from './TransactionForm.module.css';
+import { TransactionContext } from '../../context/TransactionsProvider';
 
 function TransactionForm({
   form,
   handleOpenCategoriesList,
   handleChange,
-  addTransaction,
+
   resetForm,
 }) {
+  const { addTransaction } = useContext(TransactionContext);
+
   const { date, time, category, summ, currency, comment, transType } = form;
   return (
     <form

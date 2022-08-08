@@ -1,15 +1,16 @@
 import s from './Header.module.css';
 import sprite from '../../assets/sprite.svg';
+import { Link } from 'react-router-dom';
 
-const Header = ({ title, icon, cbOnClick }) => {
+const Header = ({ title, icon }) => {
   return (
     <header className={s.header}>
       {icon && (
-        <button onClick={cbOnClick} type="button" className={s.btn}>
+        <Link to="/" className={s.btn}>
           <svg width="15" height="15">
             <use href={sprite + icon} />
           </svg>
-        </button>
+        </Link>
       )}
       <h1 className={s.title}>{title}</h1>
     </header>
