@@ -1,26 +1,22 @@
-import { useState } from 'react';
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import MainPage from './MainPage/MainPage';
-import TransactionHistoryPage from './TransactionHistoryPage/TransactionHistoryPage';
+const MainPage = lazy(() => import('./MainPage/MainPage'));
+const TransactionHistoryPage = lazy(() =>
+  import('./TransactionHistoryPage/TransactionHistoryPage')
+);
 
 export const App = () => {
   return (
-    <Routes>
-      <Route path="/*" element={<MainPage />} />
-      <Route path="/history/:transType" element={<TransactionHistoryPage />} />
-      <Route path="*" element={<p>Error</p>} />
-    </Routes>
+    <Suspense fallback={<h2>Loading...</h2>}>
+      <Routes>
+        <Route path="/*" element={<MainPage />} />
+        <Route
+          path="/history/:transType"
+          element={<TransactionHistoryPage />}
+        />
+        <Route path="*" element={<p>Error</p>} />
+      </Routes>
+    </Suspense>
   );
-
-  // switch (activePage) {
-  //   case 'main':
-  //     return <MainPage onOpenPage={onOpenPage} />;
-  //   case 'costs':
-  //     return <TransactionHistoryPage transType={activePage} onReturnBtnClick={onOpenPage} />;
-  //   case 'incomes':
-  //     return <TransactionHistoryPage transType={activePage} onReturnBtnClick={onOpenPage} />;
-  //   default:
-  //     return;
-  // }
 };

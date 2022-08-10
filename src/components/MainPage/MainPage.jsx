@@ -1,27 +1,32 @@
-import { useEffect, useState, useContext } from 'react';
-import TransactionForm from '../TransactionForm/TransactionForm';
+import { useEffect, useState, useContext, lazy, Suspense } from 'react';
+import moment from 'moment';
 import { Link, Route, Routes, useNavigate, useMatch } from 'react-router-dom';
-import CategoriesList from '../CategoriesList/CategoriesList';
 import Header from '../Header/Header';
 import s from './MainPage.module.css';
 import { CategoriesContext } from '../../context/CategoriesProvider';
+const CategoriesList = lazy(() => import('../CategoriesList/CategoriesList'));
+const TransactionForm = lazy(() =>
+  import('../TransactionForm/TransactionForm')
+);
+
+const normalizedTime = moment().format('HH:mm');
+const normalizedDate = moment().format('YYYY-MM-DD');
 
 const initialForm = {
   category: '',
-  date: '2022-07-28',
-  time: '14:14',
+  date: normalizedDate,
+  time: normalizedTime,
   summ: '',
   currency: 'UAH',
   comment: '',
   transType: 'costs',
 };
 
-const MainPage = ({ onOpenPage }) => {
+const MainPage = () => {
   const { params } = useMatch('/*');
-  const param = useMatch('/*');
+
   const navigate = useNavigate();
   const [form, setForm] = useState(initialForm);
-  const [isCategoriesList, setIsCategoriesList] = useState(false);
 
   const categoriesContextValue = useContext(CategoriesContext);
 
@@ -46,8 +51,10 @@ const MainPage = ({ onOpenPage }) => {
   };
 
   const resetForm = () => {
-    setForm(initialForm);
+    const { category, ...rest } = initialForm;
+    setForm(prev => ({ ...prev, ...rest }));
   };
+
   return (
     <div className="container">
       <Header
@@ -56,33 +63,40 @@ const MainPage = ({ onOpenPage }) => {
         cbOnClick={handleToggleCategoriesList}
       />
       <main className={s.main}>
-        <Routes>
-          <Route
-            path="category"
-            element={<CategoriesList setCategories={setCategories} transType={form.transType} />}
-          />
-          <Route
-            index
-            element={
-              <>
-                <TransactionForm
-                  handleChange={handleChange}
-                  form={form}
-                  handleOpenCategoriesList={handleToggleCategoriesList}
-                  resetForm={resetForm}
+        <Suspense fallback={<h2>Loading...</h2>}>
+          <Routes>
+            <Route
+              path="category"
+              element={
+                <CategoriesList
+                  setCategories={setCategories}
+                  transType={form.transType}
                 />
-                <div className={s.blockBtn}>
-                  <Link to="/history/costs" className={s.incomes}>
-                    Всі витрати
-                  </Link>
-                  <Link to="/history/incomes" className={s.incomes}>
-                    Всі прибутки
-                  </Link>
-                </div>
-              </>
-            }
-          />
-        </Routes>
+              }
+            />
+            <Route
+              index
+              element={
+                <>
+                  <TransactionForm
+                    handleChange={handleChange}
+                    form={form}
+                    handleOpenCategoriesList={handleToggleCategoriesList}
+                    resetForm={resetForm}
+                  />
+                  <div className={s.blockBtn}>
+                    <Link to="/history/costs" className={s.incomes}>
+                      Всі витрати
+                    </Link>
+                    <Link to="/history/incomes" className={s.incomes}>
+                      Всі прибутки
+                    </Link>
+                  </div>
+                </>
+              }
+            />
+          </Routes>
+        </Suspense>
       </main>
     </div>
   );
