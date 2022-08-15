@@ -2,12 +2,18 @@ import moment from 'moment';
 import Header from '../Header/Header';
 import sprite from '../../assets/sprite.svg';
 import s from './TransactionHistoryPage.module.css';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import { removeCosts, removeIncomes } from 'redux/transactions/transactionsActions';
+import {
+  removeCosts,
+  removeIncomes,
+} from 'redux/transactions/transactionsSlice';
 
 const TransactionHistoryPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const { transType } = useParams();
   const dispatch = useDispatch();
   const transactions = useSelector(state => state.transactions[transType]);
@@ -22,7 +28,10 @@ const TransactionHistoryPage = () => {
 
   return (
     <div className="container">
-      <Header title={`Transaction  ${transactionName}`} icon={'#icon-arrow-left'} />
+      <Header
+        title={`Transaction  ${transactionName}`}
+        icon={'#icon-arrow-left'}
+      />
       <ul className={s.list}>
         {transactions.map((el, idx) => {
           const day = moment(el.date).format('dd, DD MMM. YYYY');
@@ -34,7 +43,6 @@ const TransactionHistoryPage = () => {
               style={{ position: 'relative' }}
               onClick={e => {
                 if (e.target !== e.currentTarget) return;
-                // e.stopPropagation();
                 setOpenMenuId(null);
               }}
             >
@@ -51,15 +59,30 @@ const TransactionHistoryPage = () => {
                   <p className={s.summ}>{el.summ} </p>
                   <p className={s.currency}>{el.currency} </p>
                 </div>
-                <button type="button" className={s.btnInfo} onClick={() => setOpenMenuId(el.id)}>
+                <button
+                  type="button"
+                  className={s.btnInfo}
+                  onClick={() => setOpenMenuId(el.id)}
+                >
                   <svg className={s.svg}>
                     <use href={sprite + '#icon-navigation-more'} />
                   </svg>
                 </button>
               </div>
               {openMenuId === el.id && (
-                <div style={{ position: 'absolute', right: '30%', bottom: '0' }}>
-                  <button type="button">Edit</button>
+                <div
+                  style={{ position: 'absolute', right: '30%', bottom: '0' }}
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate('/edit/' + transType + '/' + el.id, {
+                        state: location,
+                      })
+                    }
+                  >
+                    Edit
+                  </button>
                   <button type="button" onClick={() => handleRemoveBtn(el.id)}>
                     Remove
                   </button>

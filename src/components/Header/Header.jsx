@@ -1,12 +1,14 @@
 import s from './Header.module.css';
 import sprite from '../../assets/sprite.svg';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Header = ({ title, icon }) => {
+  const location = useLocation();
+
   return (
     <header className={s.header}>
       {icon && (
-        <Link to="/" className={s.btn}>
+        <Link to={location.state ?? '/'} className={s.btn}>
           <svg width="15" height="15">
             <use href={sprite + icon} />
           </svg>

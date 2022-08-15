@@ -1,11 +1,13 @@
 import { nanoid } from 'nanoid';
-import { useContext, useState } from 'react';
-import { CategoriesContext } from '../../context/CategoriesProvider';
+import { useState } from 'react';
 import s from './CategoriesList.module.css';
 import sprite from '../../assets/sprite.svg';
+import { useSelector, useDispatch } from 'react-redux';
+import { addCostsCategory, addIncomesCategory } from 'redux/categories/categoriesOperations';
 
 const CategoriesList = ({ transType, setCategories }) => {
-  const contextValue = useContext(CategoriesContext);
+  const dispatch = useDispatch();
+  const categories = useSelector(state => state.categories[transType]);
 
   const [input, setInput] = useState('');
 
@@ -16,10 +18,9 @@ const CategoriesList = ({ transType, setCategories }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    contextValue.addCategory({ title: input, id: nanoid() }, transType);
+    transType === 'incomes' && dispatch(addIncomesCategory({ title: input }));
+    transType === 'costs' && dispatch(addCostsCategory({ title: input }));
   };
-
-  const categories = contextValue[transType];
 
   return (
     <>
