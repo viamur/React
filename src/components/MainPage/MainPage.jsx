@@ -1,9 +1,11 @@
-import { nanoid } from 'nanoid';
-import TransactionFormWithCategories from 'components/TransactionFormWithCategories/TransactionFormWithCategories';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useMatch } from 'react-router-dom';
 import Header from '../Header/Header';
-import { addCosts, addIncomes } from 'redux/transactions/transactionsSlice';
+import TransactionFormWithCategories from 'components/TransactionFormWithCategories/TransactionFormWithCategories';
+import {
+  addCostsThunk,
+  addIncomesThunk,
+} from 'redux/transactions/transactionsOperations';
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -17,9 +19,8 @@ const MainPage = () => {
   };
 
   const addTransaction = form => {
-    const id = nanoid();
-    form.transType === 'costs' && dispatch(addCosts({ ...form, id }));
-    form.transType === 'incomes' && dispatch(addIncomes({ ...form, id }));
+    form.transType === 'costs' && dispatch(addCostsThunk(form));
+    form.transType === 'incomes' && dispatch(addIncomesThunk(form));
   };
 
   return (

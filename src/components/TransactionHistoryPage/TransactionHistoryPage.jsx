@@ -9,14 +9,20 @@ import {
   removeCosts,
   removeIncomes,
 } from 'redux/transactions/transactionsSlice';
+import { useEffect } from 'react';
+import { getTransactionsThunk } from 'redux/transactions/transactionsOperations';
+import { getHasTransactions } from 'redux/transactions/transactionsSelectors';
 
 const TransactionHistoryPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const { transType } = useParams();
+
   const dispatch = useDispatch();
   const transactions = useSelector(state => state.transactions[transType]);
+  const hasTransactions = useSelector(getHasTransactions);
+  
   const [openMenuId, setOpenMenuId] = useState(null);
 
   const transactionName = transType === 'costs' ? 'Costs' : 'Incomes';
@@ -25,6 +31,10 @@ const TransactionHistoryPage = () => {
     transType === 'costs' && dispatch(removeCosts(id));
     transType === 'incomes' && dispatch(removeIncomes(id));
   };
+
+  useEffect(() => {
+    if (!hasTransactions) dispatch(getTransactionsThunk());
+  }, [dispatch, hasTransactions]);
 
   return (
     <div className="container">

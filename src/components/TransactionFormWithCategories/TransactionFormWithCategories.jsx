@@ -3,13 +3,7 @@ import { useSelector } from 'react-redux';
 import CategoriesList from 'components/CategoriesList/CategoriesList';
 import TransactionForm from 'components/TransactionForm/TransactionForm';
 import { Suspense, useEffect, useState } from 'react';
-import {
-  Link,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom';
+import { Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import s from './TransactionFormWithCategories.module.css';
 
 const normalizedTime = moment().format('HH:mm');
@@ -63,13 +57,9 @@ const TransactionFormWithCategories = ({ params, transaction, cbOnSubmit }) => {
         <Routes>
           <Route
             path="category"
-            element={
-              <CategoriesList
-                setCategories={setCategories}
-                transType={form.transType}
-              />
-            }
+            element={<CategoriesList setCategories={setCategories} transType={form.transType} />}
           />
+          <Route path="*" element={<Navigate to="/" />} />
           <Route
             index
             element={

@@ -9,32 +9,22 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import transactionsReducer from './transactions/transactionsSlice';
 import categoriesReducer from './categories/categoriesReducer';
+import authReducer from './auth/authSlice';
+import storage from 'redux-persist/lib/storage';
 
-const transactionsPersistConfig = {
-  key: 'transactions',
-  version: 1,
+const persistConfig = {
+  key: 'idToken',
   storage,
+  whitelist: ['token'],
 };
-// const categoriesPersistConfig = {
-//   key: 'categories',
-//   version: 1,
-//   storage,
-// };
-
-// const persistedCategoriesReducer = persistReducer(
-//   categoriesPersistConfig,
-//   categoriesReducer
-// );
-
-const persistedTransactionsReducer = persistReducer(transactionsPersistConfig, transactionsReducer);
 
 const store = configureStore({
   reducer: {
-    transactions: persistedTransactionsReducer,
+    transactions: transactionsReducer,
     categories: categoriesReducer,
+    auth: persistReducer(persistConfig, authReducer),
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
@@ -44,6 +34,6 @@ const store = configureStore({
     }),
 });
 
-export let persistor = persistStore(store);
+const persistor = persistStore(store);
 
-export default store;
+export { store, persistor };
