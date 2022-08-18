@@ -17,7 +17,7 @@ import storage from 'redux-persist/lib/storage';
 const persistConfig = {
   key: 'idToken',
   storage,
-  whitelist: ['token'],
+  whitelist: ['token', 'localId'],
 };
 
 const store = configureStore({

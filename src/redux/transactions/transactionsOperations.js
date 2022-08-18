@@ -3,9 +3,10 @@ const { addTransactionApi, getTransactionsApi } = require('utils/firebaseApi');
 
 export const addCostsThunk = createAsyncThunk(
   'transactions/addCosts',
-  async (transaction, { rejectWithValue }) => {
+  async (transaction, { rejectWithValue, getState }) => {
+    const { localId, token } = getState().auth;
     try {
-      const newCosts = await addTransactionApi(transaction);
+      const newCosts = await addTransactionApi({ transaction, localId, token });
       return newCosts;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -15,9 +16,10 @@ export const addCostsThunk = createAsyncThunk(
 
 export const addIncomesThunk = createAsyncThunk(
   'transactions/addIncomes',
-  async (transaction, { rejectWithValue }) => {
+  async (transaction, { rejectWithValue, getState }) => {
+    const { localId, token } = getState().auth;
     try {
-      const newIncomes = await addTransactionApi(transaction);
+      const newIncomes = await addTransactionApi({ transaction, localId, token });
       return newIncomes;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -27,9 +29,10 @@ export const addIncomesThunk = createAsyncThunk(
 
 export const getTransactionsThunk = createAsyncThunk(
   'transactions/getAll',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
+    const { localId, token } = getState().auth;
     try {
-      const transactions = await getTransactionsApi();
+      const transactions = await getTransactionsApi({ localId, token });
       return transactions;
     } catch (error) {
       return rejectWithValue(error.message);

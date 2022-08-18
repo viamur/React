@@ -11,3 +11,16 @@
   display: flex;
   align-items: center;
 }
+.btnLog {
+  margin-left: auto;
+  background-color: transparent;
+  border: 2px solid white;
+  padding: 8px 25px;
+  transition: all 250ms;
+  border-radius: 10px;
+  letter-spacing: 1px;
+  box-shadow: 0px 6px 8px -5px white;
+}
+.btnLog:hover {
+  background-color: white;
+}

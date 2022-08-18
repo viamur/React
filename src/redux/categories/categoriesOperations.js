@@ -14,12 +14,13 @@ import {
   getIncomesCategorySuccess,
 } from './categoriesAtions';
 
-export const getIncomesCategories = () => async dispatch => {
+export const getIncomesCategories = () => async (dispatch, getState) => {
+  const { localId, token } = getState().auth;
   dispatch(getIncomesCategoryRequest());
   dispatch(getCostsCategoryRequest());
 
   try {
-    const { incomes, costs } = await getCategoriesApi();
+    const { incomes, costs } = await getCategoriesApi({ localId, token });
     dispatch(getIncomesCategorySuccess(incomes));
     dispatch(getCostsCategorySuccess(costs));
   } catch (error) {
@@ -28,20 +29,22 @@ export const getIncomesCategories = () => async dispatch => {
   }
 };
 
-export const addIncomesCategory = category => async dispatch => {
+export const addIncomesCategory = category => async (dispatch, getState) => {
+  const { localId, token } = getState().auth;
   dispatch(addIncomesCategoryRequest());
   try {
-    const data = await addCategoryApi('incomes', category);
+    const data = await addCategoryApi({ type: 'incomes', category, localId, token });
     dispatch(addIncomesCategorySuccess(data));
   } catch (error) {
     dispatch(addIncomesCategoryError(error.message));
   }
 };
 
-export const addCostsCategory = category => async dispatch => {
+export const addCostsCategory = category => async (dispatch, getState) => {
+  const { localId, token } = getState().auth;
   dispatch(addCostsCategoryRequest());
   try {
-    const data = await addCategoryApi('costs', category);
+    const data = await addCategoryApi({ type: 'costs', category, localId, token });
     dispatch(addCostsCategorySuccess(data));
   } catch (error) {
     dispatch(addCostsCategoryError(error.message));

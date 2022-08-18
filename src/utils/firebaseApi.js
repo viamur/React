@@ -13,8 +13,10 @@ const transformDataObj = categories =>
       }))
     : [];
 
-export const getCategoriesApi = async () => {
-  const response = await axios.get('categories.json');
+// url "BASE_URL/users/{localId}/categories.json?auth={token}"
+
+export const getCategoriesApi = async ({ localId, token }) => {
+  const response = await axios.get(`users/${localId}/categories.json`, { params: { auth: token } });
   if (response.data === null) return { incomes: [], costs: [] };
 
   const incomes = transformDataObj(response.data.incomes);
@@ -27,25 +29,33 @@ export const getCategoriesApi = async () => {
   };
 };
 
-export const addCategoryApi = async (type, category) => {
-  const response = await axios.post(`categories/${type}.json`, category);
+export const addCategoryApi = async ({ type, category, localId, token }) => {
+  const response = await axios.post(`users/${localId}/categories/${type}.json`, category, {
+    params: { auth: token },
+  });
   return {
     id: response.data.name,
     ...category,
   };
 };
 
-export const addTransactionApi = async transaction => {
+export const addTransactionApi = async ({ transaction, localId, token }) => {
   const { transType } = transaction;
-  const response = await axios.post(`transactions/${transType}.json`, transaction);
+  const response = await axios.post(
+    `users/${localId}/transactions/${transType}.json`,
+    transaction,
+    { params: { auth: token } }
+  );
   return {
     id: response.data.name,
     ...transaction,
   };
 };
 
-export const getTransactionsApi = async () => {
-  const response = await axios.get('transactions.json');
+export const getTransactionsApi = async ({ localId, token }) => {
+  const response = await axios.get(`users/${localId}/transactions.json`, {
+    params: { auth: token },
+  });
   if (response.data === null) return { incomes: [], costs: [] };
 
   const incomes = transformDataObj(response.data.incomes);

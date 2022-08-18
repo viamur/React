@@ -1,6 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { loginUserThunk, registerUserThunk } from './authOperations';
 
+const initialState = {
+  isAuth: false,
+  email: null,
+  token: null,
+  isLoading: false,
+  error: null,
+};
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
@@ -9,6 +17,12 @@ const authSlice = createSlice({
     token: null,
     isLoading: false,
     error: null,
+    localId: null,
+  },
+  reducers: {
+    logOutUser(state, { payload }) {
+      return { ...initialState };
+    },
   },
   extraReducers: {
     [loginUserThunk.pending]: (state, { payload }) => {
@@ -25,6 +39,7 @@ const authSlice = createSlice({
       state.email = payload.email;
       state.token = payload.idToken;
       state.isAuth = true;
+      state.localId = payload.localId;
     },
     [registerUserThunk.pending]: (state, { payload }) => {
       state.isLoading = true;
@@ -40,8 +55,10 @@ const authSlice = createSlice({
       state.email = payload.email;
       state.token = payload.idToken;
       state.isAuth = true;
+      state.localId = payload.localId;
     },
   },
 });
 
+export const { logOutUser } = authSlice.actions;
 export default authSlice.reducer;
