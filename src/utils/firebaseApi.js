@@ -1,4 +1,3 @@
-import { getValue } from '@testing-library/user-event/dist/utils';
 import axios from 'axios';
 
 axios.defaults.baseURL = 'https://wallet-3dac9-default-rtdb.firebaseio.com/';
@@ -13,10 +12,10 @@ const transformDataObj = categories =>
       }))
     : [];
 
-// url "BASE_URL/users/{localId}/categories.json?auth={token}"
-
 export const getCategoriesApi = async ({ localId, token }) => {
-  const response = await axios.get(`users/${localId}/categories.json`, { params: { auth: token } });
+  const response = await axios.get(`users/${localId}/categories.json`, {
+    params: { auth: token },
+  });
   if (response.data === null) return { incomes: [], costs: [] };
 
   const incomes = transformDataObj(response.data.incomes);
@@ -66,6 +65,20 @@ export const getTransactionsApi = async ({ localId, token }) => {
     incomes,
     costs,
   };
+};
+
+export const removeTransactionApi = async ({ localId, transType, id, token }) => {
+  await axios.delete(`users/${localId}/transactions/${transType}/${id}.json`, {
+    params: { auth: token },
+  });
+  return id;
+};
+
+export const editTransactionApi = async ({ localId, transType, token, newData }) => {
+  await axios.patch(`users/${localId}/transactions/${transType}/${newData.id}.json`, newData, {
+    params: { auth: token },
+  });
+  return newData;
 };
 
 export const loginUserApi = async obj => {

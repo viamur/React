@@ -1,0 +1,26 @@
+.container {
+    position: absolute;
+    right: 0;
+    top: calc(100% - 5px);
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    background-color: orange;
+}
+
+.btn {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: left;
+    padding: 5px 30px 5px 5px;
+}
+
+.btn:hover {
+    background-color: #fff;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}

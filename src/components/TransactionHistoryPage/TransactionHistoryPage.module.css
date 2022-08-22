@@ -1,5 +1,5 @@
 .list {
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 60px - 80px - 30px);
   padding: 10px;
   background-color: beige;
 }

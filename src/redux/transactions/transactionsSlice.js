@@ -2,7 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   addCostsThunk,
   addIncomesThunk,
+  editCostsThunk,
+  editIncomesThunk,
   getTransactionsThunk,
+  removeCostsThunk,
+  removeIncomesThunk,
 } from './transactionsOperations';
 
 const transactionsSlice = createSlice({
@@ -14,12 +18,6 @@ const transactionsSlice = createSlice({
     error: null,
   },
   reducers: {
-    // addCosts(state, { payload }) {
-    //   return { ...state, costs: [...state.costs, payload] };
-    // },
-    // addIncomes(state, { payload }) {
-    //   return { ...state, incomes: [...state.incomes, payload] };
-    // },
     removeCosts(state, { payload }) {
       state.costs = state.costs.filter(el => el.id !== payload);
     },
@@ -84,6 +82,58 @@ const transactionsSlice = createSlice({
       isLoading: false,
       error: payload,
     }),
+
+    [removeCostsThunk.pending]: state => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    [removeCostsThunk.fulfilled]: (state, { payload }) => {
+      state.costs = state.costs.filter(el => el.id !== payload);
+    },
+    [removeCostsThunk.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      state.error = payload;
+    },
+
+    [removeIncomesThunk.pending]: state => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    [removeIncomesThunk.fulfilled]: (state, { payload }) => {
+      state.incomes = state.costs.filter(el => el.id !== payload);
+    },
+    [removeIncomesThunk.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      state.error = payload;
+    },
+
+    [editIncomesThunk.pending]: state => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    [editIncomesThunk.fulfilled]: (state, { payload }) => {
+      state.incomes = state.incomes.map(income =>
+        income.id === payload.id ? payload : income
+      );
+    },
+    [editIncomesThunk.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      state.error = payload;
+    },
+
+    [editCostsThunk.pending]: state => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    [editCostsThunk.fulfilled]: (state, { payload }) => {
+      state.costs = state.costs.map(cost =>
+        cost.id === payload.id ? payload : cost
+      );
+    },
+    [editCostsThunk.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      state.error = payload;
+    },
   },
 });
 

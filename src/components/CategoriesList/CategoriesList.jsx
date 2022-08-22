@@ -1,9 +1,11 @@
-import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import s from './CategoriesList.module.css';
 import sprite from '../../assets/sprite.svg';
 import { useSelector, useDispatch } from 'react-redux';
-import { addCostsCategory, addIncomesCategory } from 'redux/categories/categoriesOperations';
+import {
+  addCostsCategory,
+  addIncomesCategory,
+} from 'redux/categories/categoriesOperations';
 
 const CategoriesList = ({ transType, setCategories }) => {
   const dispatch = useDispatch();

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginUserThunk, registerUserThunk } from './authOperations';
+import { googleAuth, loginUserThunk, registerUserThunk } from './authOperations';
 
 const initialState = {
   isAuth: false,
@@ -56,6 +56,22 @@ const authSlice = createSlice({
       state.token = payload.idToken;
       state.isAuth = true;
       state.localId = payload.localId;
+    },
+    [googleAuth.pending]: (state, { payload }) => {
+      state.isLoading = true;
+      state.error = null;
+      state.isAuth = false;
+    },
+    [googleAuth.rejected]: (state, { payload }) => {
+      state.error = payload;
+      state.isLoading = false;
+    },
+    [googleAuth.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.email = payload.email;
+      state.token = payload.accessToken;
+      state.isAuth = true;
+      state.localId = payload.uid;
     },
   },
 });

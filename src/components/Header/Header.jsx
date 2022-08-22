@@ -2,11 +2,13 @@ import s from './Header.module.css';
 import sprite from '../../assets/sprite.svg';
 import { Link, useLocation } from 'react-router-dom';
 import { logOutUser } from '../../redux/auth/authSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getIsAuth } from 'redux/auth/authSelector';
 
 const Header = ({ title, icon }) => {
   const location = useLocation();
   const dispatch = useDispatch();
+  const isAuth = useSelector(getIsAuth);
 
   return (
     <header className={s.header}>
@@ -18,9 +20,15 @@ const Header = ({ title, icon }) => {
         </Link>
       )}
       <h1 className={s.title}>{title}</h1>
-      <button type="button" className={s.btnLog} onClick={() => dispatch(logOutUser())}>
-        LogOut
-      </button>
+      {isAuth && (
+        <button
+          type="button"
+          className={s.btnLog}
+          onClick={() => dispatch(logOutUser())}
+        >
+          LogOut
+        </button>
+      )}
     </header>
   );
 };

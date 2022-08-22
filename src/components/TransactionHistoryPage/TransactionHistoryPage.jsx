@@ -2,34 +2,32 @@ import moment from 'moment';
 import Header from '../Header/Header';
 import sprite from '../../assets/sprite.svg';
 import s from './TransactionHistoryPage.module.css';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  removeCosts,
-  removeIncomes,
-} from 'redux/transactions/transactionsSlice';
-import { useEffect } from 'react';
-import { getTransactionsThunk } from 'redux/transactions/transactionsOperations';
+  getTransactionsThunk,
+  removeCostsThunk,
+  removeIncomesThunk,
+} from 'redux/transactions/transactionsOperations';
 import { getHasTransactions } from 'redux/transactions/transactionsSelectors';
+import ContextMenu from '../ContextMenu/ContextMenu';
 
 const TransactionHistoryPage = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const { transType } = useParams();
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const transactions = useSelector(state => state.transactions[transType]);
   const hasTransactions = useSelector(getHasTransactions);
-  
+
   const [openMenuId, setOpenMenuId] = useState(null);
 
   const transactionName = transType === 'costs' ? 'Costs' : 'Incomes';
 
   const handleRemoveBtn = id => {
-    transType === 'costs' && dispatch(removeCosts(id));
-    transType === 'incomes' && dispatch(removeIncomes(id));
+    transType === 'costs' && dispatch(removeCostsThunk(id));
+    transType === 'incomes' && dispatch(removeIncomesThunk(id));
   };
 
   useEffect(() => {
@@ -45,6 +43,8 @@ const TransactionHistoryPage = () => {
       <ul className={s.list}>
         {transactions.map((el, idx) => {
           const day = moment(el.date).format('dd, DD MMM. YYYY');
+          const onRemoveClick = () => handleRemoveBtn(el.id);
+          const onEditClick = () => navigate(`/edit/${el.transType}/${el.id}/`);
 
           return (
             <li
@@ -80,23 +80,10 @@ const TransactionHistoryPage = () => {
                 </button>
               </div>
               {openMenuId === el.id && (
-                <div
-                  style={{ position: 'absolute', right: '30%', bottom: '0' }}
-                >
-                  <button
-                    type="button"
-                    onClick={() =>
-                      navigate('/edit/' + transType + '/' + el.id, {
-                        state: location,
-                      })
-                    }
-                  >
-                    Edit
-                  </button>
-                  <button type="button" onClick={() => handleRemoveBtn(el.id)}>
-                    Remove
-                  </button>
-                </div>
+                <ContextMenu
+                  onRemoveClick={onRemoveClick}
+                  onEditClick={onEditClick}
+                />
               )}
             </li>
           );

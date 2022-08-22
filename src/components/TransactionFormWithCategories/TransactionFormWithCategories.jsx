@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import CategoriesList from 'components/CategoriesList/CategoriesList';
-import TransactionForm from 'components/TransactionForm/TransactionForm';
+import CategoriesList from 'components/categoriesList/CategoriesList';
+import TransactionForm from 'components/transactionForm/TransactionForm';
 import { Suspense, useEffect, useState } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import s from './TransactionFormWithCategories.module.css';

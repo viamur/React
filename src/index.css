@@ -53,5 +53,13 @@ img {
 .container {
   width: 480px;
   margin: 0 auto;
-  background-color: white;
+  background-color: orange;
+  padding: 15px;
+  padding-top: 0;
 }
+
+.login__title {
+  display: block;
+  padding: 10px;
+}
+

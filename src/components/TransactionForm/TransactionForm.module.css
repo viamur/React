@@ -1,11 +1,8 @@
 .form {
   display: flex;
   flex-direction: column;
-
   background-color: white;
   font-size: 10px;
-
-  padding: 10px;
 }
 .form input {
 }
@@ -15,9 +12,7 @@
 }
 .div {
   display: flex;
-
   padding: 10px;
-
   border-bottom: 1px solid gray;
 }
 .day,

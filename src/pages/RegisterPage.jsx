@@ -1,13 +1,14 @@
-import { Link } from 'react-router-dom';
 import AuthForm from '../components/AuthForm/AuthForm';
+import AuthGoToBtn from '../components/AuthGoToBtn/AuthGoToBtn';
+import Header from '../components/Header/Header';
 
 const RegisterPage = () => {
   return (
-    <>
-      <h2>Registration</h2>
+    <div className="container">
+      <Header title={'Registration'} />
       <AuthForm />
-      <Link to="/login">Go to login</Link>
-    </>
+      <AuthGoToBtn title={'Go to Login'} path={'/login'} />
+    </div>
   );
 };
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { loginUserThunk, registerUserThunk } from 'redux/auth/authOperations';
+import s from './AuthForm.module.css';
 const initialState = { email: '', password: '' };
 
 const AuthForm = ({ isLogin = false }) => {
@@ -24,8 +25,9 @@ const AuthForm = ({ isLogin = false }) => {
     setForm(initialState);
   };
   return (
-    <form onSubmit={handleSubmit}>
+    <form className={s.form} onSubmit={handleSubmit}>
       <input
+        className={s.input}
         type="text"
         name="email"
         placeholder="email"
@@ -33,13 +35,16 @@ const AuthForm = ({ isLogin = false }) => {
         onChange={handleChange}
       />
       <input
+        className={s.input}
         type="password"
         name="password"
         placeholder="password"
         value={form.password}
         onChange={handleChange}
       />
-      <button type="Submit">{isLogin ? 'Login' : 'Registration'} </button>
+      <button className={s.btn} type="Submit">
+        {isLogin ? 'Login' : 'Registration'}{' '}
+      </button>
     </form>
   );
 };
